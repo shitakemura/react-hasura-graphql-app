@@ -1,6 +1,8 @@
 import { gql, useMutation } from "@apollo/client";
 import { Button, HStack, Input } from "@chakra-ui/react";
 import { useState } from "react";
+import { Todo } from "../../models/todo";
+import { GET_MY_TODOS } from "./TodoList";
 
 const ADD_TODO = gql`
   mutation ($title: String!) {
@@ -18,10 +20,30 @@ const ADD_TODO = gql`
 
 const TodoInput = () => {
   const [titleInput, setTitleInput] = useState("");
-  const [addTodo] = useMutation(ADD_TODO);
+
+  const resetTitleInput = () => setTitleInput("");
+  const [addTodo] = useMutation<
+    { insert_todos: { returning: Todo[] } },
+    { title: string }
+  >(ADD_TODO, { onCompleted: resetTitleInput });
 
   const handleAdd = () => {
-    addTodo({ variables: { title: titleInput } });
+    addTodo({
+      variables: { title: titleInput },
+      update(cache, { data }) {
+        const getExistingTodos: { todos: Todo[] } | null = cache.readQuery({
+          query: GET_MY_TODOS,
+        });
+        const existingTodos = getExistingTodos?.todos ?? [];
+        const newTodo = data?.insert_todos.returning[0];
+        console.log(`newTodo: ${JSON.stringify(newTodo)}`);
+
+        cache.writeQuery({
+          query: GET_MY_TODOS,
+          data: { todos: [newTodo, ...existingTodos] },
+        });
+      },
+    });
   };
 
   return (

@@ -7,7 +7,7 @@ type TodoListProps = {
   todos: Todo[];
 };
 
-const GET_MY_TODOS = gql`
+export const GET_MY_TODOS = gql`
   query getMyTodos {
     todos(order_by: { created_at: desc }) {
       id
@@ -30,7 +30,7 @@ const TodoList = ({ todos }: TodoListProps) => {
 };
 
 const TodoListQuery = () => {
-  const { loading, error, data } = useQuery(GET_MY_TODOS);
+  const { loading, error, data } = useQuery<{ todos: Todo[] }>(GET_MY_TODOS);
 
   if (loading) return null;
   if (error) {
@@ -38,7 +38,7 @@ const TodoListQuery = () => {
     return <Text>Error</Text>;
   }
 
-  return <TodoList todos={data.todos} />;
+  return <TodoList todos={data?.todos ?? []} />;
 };
 
 export default TodoListQuery;
