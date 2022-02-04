@@ -1,14 +1,21 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import React from "react";
+import ReactDOM from "react-dom";
+import "./index.css";
+import App from "./App";
+import reportWebVitals from "./reportWebVitals";
+
+import { ChakraProvider } from "@chakra-ui/react";
+import Auth0ProviderContainer from "./components/Auth/auth0-provider-container";
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <Auth0ProviderContainer>
+      <ChakraProvider>
+        <App />
+      </ChakraProvider>
+    </Auth0ProviderContainer>
   </React.StrictMode>,
-  document.getElementById('root')
+  document.getElementById("root")
 );
 
 // If you want to start measuring performance in your app, pass a function
