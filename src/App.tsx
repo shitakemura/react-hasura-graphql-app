@@ -1,8 +1,8 @@
 import { ApolloClient, HttpLink, ApolloProvider } from "@apollo/client";
 import { InMemoryCache } from "@apollo/client/cache";
 import { useAuth0 } from "@auth0/auth0-react";
-import { Stack, Text } from "@chakra-ui/react";
 import Login from "./components/Auth/Login";
+import TodoContainer from "./components/Todo/TodoContainer";
 import useAccessToken from "./hooks/useAccessToken";
 
 const createApolloClient = (authToken: string) => {
@@ -19,7 +19,7 @@ const createApolloClient = (authToken: string) => {
 
 function App() {
   const idToken = useAccessToken();
-  const { isLoading, logout } = useAuth0();
+  const { isLoading } = useAuth0();
 
   if (isLoading) return null;
   if (!idToken) return <Login />;
@@ -29,9 +29,7 @@ function App() {
 
   return (
     <ApolloProvider client={client}>
-      <Stack>
-        <Text>Todo App</Text>
-      </Stack>
+      <TodoContainer />
     </ApolloProvider>
   );
 }
