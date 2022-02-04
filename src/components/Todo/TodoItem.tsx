@@ -1,14 +1,73 @@
+import { gql, useMutation } from "@apollo/client";
 import { DeleteIcon } from "@chakra-ui/icons";
 import { Checkbox, HStack, Text } from "@chakra-ui/react";
-import { useState } from "react";
 import { Todo } from "../../models/todo";
+import { GET_MY_TODOS } from "./TodoList";
 
 type TodoItemProps = {
   todo: Todo;
 };
 
 const TodoItem = ({ todo }: TodoItemProps) => {
-  const [isChecked, setIsChecked] = useState(todo.is_completed);
+  const { is_completed } = todo;
+
+  const TOGGLE_TODO = gql`
+    mutation toggleTodo($id: Int!, $isCompleted: Boolean!) {
+      update_todos(
+        where: { id: { _eq: $id } }
+        _set: { is_completed: $isCompleted }
+      ) {
+        affected_rows
+        returning {
+          id
+          title
+          is_completed
+          created_at
+        }
+      }
+    }
+  `;
+
+  const [todoUpdate] = useMutation(TOGGLE_TODO, {
+    update: (cache, { data }) => {
+      const getExistingTodos: { todos: Todo[] } | null = cache.readQuery({
+        query: GET_MY_TODOS,
+      });
+      const existingTodos = getExistingTodos?.todos ?? [];
+      const newTodos = existingTodos.map((t) => {
+        if (t.id === todo.id) {
+          return { ...t, ...data.update_todos.returning[0] };
+        } else {
+          return t;
+        }
+      });
+      cache.writeQuery({
+        query: GET_MY_TODOS,
+        data: { todos: newTodos },
+      });
+    },
+  });
+
+  const toggleTodo = () => {
+    todoUpdate({
+      variables: { id: todo.id, isCompleted: !todo.is_completed },
+      optimisticResponse: {
+        __typename: "mutation_root",
+        update_todos: {
+          __typename: "todos_mutation_response",
+          affected_rows: 1,
+          returning: [
+            {
+              __typename: "todos",
+              id: todo.id,
+              title: todo.title,
+              is_completed: !todo.is_completed,
+            },
+          ],
+        },
+      },
+    });
+  };
 
   return (
     <HStack
@@ -20,14 +79,10 @@ const TodoItem = ({ todo }: TodoItemProps) => {
       justify='space-between'
       spacing={8}>
       <HStack spacing={8}>
-        <Checkbox
-          size='lg'
-          isChecked={isChecked}
-          onChange={(e) => setIsChecked(e.target.checked)}
-        />
+        <Checkbox size='lg' isChecked={is_completed} onChange={toggleTodo} />
         <Text
-          textDecoration={isChecked ? "line-through" : undefined}
-          color={isChecked ? "gray.500" : "black"}>
+          textDecoration={is_completed ? "line-through" : undefined}
+          color={is_completed ? "gray.500" : "black"}>
           {todo.title}
         </Text>
       </HStack>

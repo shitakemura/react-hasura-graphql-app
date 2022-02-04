@@ -4,24 +4,25 @@ import { useState } from "react";
 import { Todo } from "../../models/todo";
 import { GET_MY_TODOS } from "./TodoList";
 
-const ADD_TODO = gql`
-  mutation ($title: String!) {
-    insert_todos(objects: { title: $title }) {
-      affected_rows
-      returning {
-        id
-        title
-        is_completed
-        created_at
-      }
-    }
-  }
-`;
-
 const TodoInput = () => {
   const [titleInput, setTitleInput] = useState("");
 
   const resetTitleInput = () => setTitleInput("");
+
+  const ADD_TODO = gql`
+    mutation ($title: String!) {
+      insert_todos(objects: { title: $title }) {
+        affected_rows
+        returning {
+          id
+          title
+          is_completed
+          created_at
+        }
+      }
+    }
+  `;
+
   const [addTodo] = useMutation<
     { insert_todos: { returning: Todo[] } },
     { title: string }
