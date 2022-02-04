@@ -1,19 +1,22 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
-import App from "./App";
+import App from "./components/App";
 import reportWebVitals from "./reportWebVitals";
 
+import { BrowserRouter } from "react-router-dom";
 import { ChakraProvider } from "@chakra-ui/react";
 import Auth0ProviderContainer from "./components/Auth/auth0-provider-container";
 
 ReactDOM.render(
   <React.StrictMode>
-    <Auth0ProviderContainer>
-      <ChakraProvider>
-        <App />
-      </ChakraProvider>
-    </Auth0ProviderContainer>
+    <BrowserRouter>
+      <Auth0ProviderContainer>
+        <ChakraProvider>
+          <App />
+        </ChakraProvider>
+      </Auth0ProviderContainer>
+    </BrowserRouter>
   </React.StrictMode>,
   document.getElementById("root")
 );
