@@ -6,4 +6,5 @@
 
 ## backend
 
-- Hasura Cloud
+- Hasura GraphQL Engine
+- ref: https://hasura.io/learn/graphql/hasura/introduction/
