@@ -36,7 +36,6 @@ const TodoInput = () => {
         });
         const existingTodos = getExistingTodos?.todos ?? [];
         const newTodo = data?.insert_todos.returning[0];
-        console.log(`newTodo: ${JSON.stringify(newTodo)}`);
 
         cache.writeQuery({
           query: GET_MY_TODOS,

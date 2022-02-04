@@ -19,7 +19,6 @@ export const GET_MY_TODOS = gql`
 `;
 
 const TodoList = ({ todos }: TodoListProps) => {
-  console.log(`todos: ${JSON.stringify(todos)}`);
   return (
     <VStack w='full' paddingX={8}>
       {todos.map((todo) => (
