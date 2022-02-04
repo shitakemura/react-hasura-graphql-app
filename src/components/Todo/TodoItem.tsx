@@ -62,6 +62,7 @@ const TodoItem = ({ todo }: TodoItemProps) => {
               id: todo.id,
               title: todo.title,
               is_completed: !todo.is_completed,
+              created_at: todo.created_at,
             },
           ],
         },
