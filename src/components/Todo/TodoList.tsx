@@ -1,5 +1,5 @@
-import { gql, useQuery } from "@apollo/client";
-import { VStack, Text } from "@chakra-ui/react";
+import { gql } from "@apollo/client";
+import { VStack } from "@chakra-ui/react";
 import { Todo } from "../../models/todo";
 import TodoItem from "./TodoItem";
 
@@ -28,16 +28,4 @@ const TodoList = ({ todos }: TodoListProps) => {
   );
 };
 
-const TodoListQuery = () => {
-  const { loading, error, data } = useQuery<{ todos: Todo[] }>(GET_MY_TODOS);
-
-  if (loading) return null;
-  if (error) {
-    console.error(error);
-    return <Text>Error</Text>;
-  }
-
-  return <TodoList todos={data?.todos ?? []} />;
-};
-
-export default TodoListQuery;
+export default TodoList;
