@@ -70,6 +70,34 @@ const TodoItem = ({ todo }: TodoItemProps) => {
     });
   };
 
+  const REMOVE_TODO = gql`
+    mutation removeTodo($id: Int!) {
+      delete_todos(where: { id: { _eq: $id } }) {
+        affected_rows
+      }
+    }
+  `;
+
+  const [todoRemove] = useMutation(REMOVE_TODO, {
+    update(cache) {
+      const getExistingTodos: { todos: Todo[] } | null = cache.readQuery({
+        query: GET_MY_TODOS,
+      });
+      const existingTodos = getExistingTodos?.todos ?? [];
+      const newTodos = existingTodos.filter((t) => t.id !== todo.id);
+      cache.writeQuery({
+        query: GET_MY_TODOS,
+        data: { todos: newTodos },
+      });
+    },
+  });
+
+  const removeTodo = () => {
+    todoRemove({
+      variables: { id: todo.id },
+    });
+  };
+
   return (
     <HStack
       borderColor='blue.300'
@@ -91,7 +119,7 @@ const TodoItem = ({ todo }: TodoItemProps) => {
         color='blue.500'
         boxSize={5}
         _hover={{ boxSize: 6 }}
-        onClick={() => {}}
+        onClick={removeTodo}
       />
     </HStack>
   );
