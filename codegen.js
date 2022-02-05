@@ -1,7 +1,7 @@
 module.exports = {
   schema: [
     {
-      "https://hasura.io/learn/graphql": {
+      "https://maximum-elephant-13.hasura.app/v1/graphql": {
         headers: {
           Authorization: "Bearer " + process.env.AUTH_TOKEN,
         },
@@ -11,7 +11,7 @@ module.exports = {
   documents: ["./src/**/*.tsx", "./src/**/*.ts"],
   overwrite: true,
   generates: {
-    "./generated/graphql.tsx": {
+    "./src/generated/graphql.tsx": {
       plugins: [
         "typescript",
         "typescript-operations",
