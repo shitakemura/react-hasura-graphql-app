@@ -6,6 +6,7 @@ import Login from "./Auth/Login";
 import TodoContainer from "./Todo/TodoContainer";
 import useAccessToken from "../hooks/useAccessToken";
 import Header from "./Header";
+import { Spinner, Stack } from "@chakra-ui/react";
 
 const createApolloClient = (authToken: string) => {
   return new ApolloClient({
@@ -23,7 +24,19 @@ function App() {
   const idToken = useAccessToken();
   const { isLoading, isAuthenticated } = useAuth0();
 
-  if (isLoading) return null;
+  if (isLoading) {
+    return (
+      <Stack w='full' h='100vh' justifyContent='center' alignItems='center'>
+        <Spinner
+          thickness='4px'
+          emptyColor='gray.200'
+          color='blue.500'
+          size='xl'
+        />
+      </Stack>
+    );
+  }
+
   if (!isAuthenticated) return <Login />;
 
   if (idToken) {

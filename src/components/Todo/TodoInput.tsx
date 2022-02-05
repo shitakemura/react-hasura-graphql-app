@@ -23,7 +23,7 @@ const TodoInput = () => {
     }
   `;
 
-  const [addTodo] = useMutation<
+  const [addTodo, { loading }] = useMutation<
     { insert_todos: { returning: Todo[] } },
     { title: string }
   >(ADD_TODO, { onCompleted: resetTitleInput });
@@ -56,7 +56,12 @@ const TodoInput = () => {
         value={titleInput}
         onChange={(e) => setTitleInput(e.target.value)}
       />
-      <Button paddingX={8} bgColor='blue.500' color='white' onClick={handleAdd}>
+      <Button
+        paddingX={8}
+        bgColor='blue.500'
+        color='white'
+        isLoading={loading}
+        onClick={handleAdd}>
         Add Todo
       </Button>
     </HStack>

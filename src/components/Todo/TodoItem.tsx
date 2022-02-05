@@ -1,6 +1,6 @@
 import { gql, useMutation } from "@apollo/client";
 import { DeleteIcon } from "@chakra-ui/icons";
-import { Checkbox, HStack, Text } from "@chakra-ui/react";
+import { Checkbox, HStack, Spinner, Text } from "@chakra-ui/react";
 import { Todo } from "../../models/todo";
 import { GET_MY_TODOS } from "./TodoList";
 
@@ -78,7 +78,7 @@ const TodoItem = ({ todo }: TodoItemProps) => {
     }
   `;
 
-  const [todoRemove] = useMutation(REMOVE_TODO, {
+  const [todoRemove, { loading }] = useMutation(REMOVE_TODO, {
     update(cache) {
       const getExistingTodos: { todos: Todo[] } | null = cache.readQuery({
         query: GET_MY_TODOS,
@@ -115,12 +115,21 @@ const TodoItem = ({ todo }: TodoItemProps) => {
           {todo.title}
         </Text>
       </HStack>
-      <DeleteIcon
-        color='blue.500'
-        boxSize={5}
-        _hover={{ boxSize: 6 }}
-        onClick={removeTodo}
-      />
+      {loading ? (
+        <Spinner
+          thickness='4px'
+          emptyColor='gray.200'
+          color='blue.500'
+          size='md'
+        />
+      ) : (
+        <DeleteIcon
+          color='blue.500'
+          boxSize={5}
+          _hover={{ boxSize: 6 }}
+          onClick={removeTodo}
+        />
+      )}
     </HStack>
   );
 };
