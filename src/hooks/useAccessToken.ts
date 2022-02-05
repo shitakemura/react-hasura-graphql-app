@@ -4,12 +4,14 @@ import { AUTH_CONFIG } from "../components/Auth/auth0-variables";
 
 const useAccessToken = () => {
   const [idToken, setIdToken] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const { user, getAccessTokenSilently } = useAuth0();
 
   useEffect(() => {
     const getAccessToken = async () => {
       const { audience, scope } = AUTH_CONFIG;
 
+      setIsLoading(true);
       try {
         const accessToken = await getAccessTokenSilently({
           audience,
@@ -18,13 +20,15 @@ const useAccessToken = () => {
         setIdToken(accessToken);
       } catch (e: any) {
         console.log(e.message);
+      } finally {
+        setIsLoading(false);
       }
     };
 
     getAccessToken();
   }, [getAccessTokenSilently, user?.sub]);
 
-  return idToken;
+  return { idToken, isLoading };
 };
 
 export default useAccessToken;

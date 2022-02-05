@@ -1,6 +1,5 @@
 import { ApolloClient, HttpLink, ApolloProvider } from "@apollo/client";
 import { InMemoryCache } from "@apollo/client/cache";
-import { useAuth0 } from "@auth0/auth0-react";
 import { Routes, Route } from "react-router-dom";
 import Login from "./Auth/Login";
 import TodoContainer from "./Todo/TodoContainer";
@@ -21,8 +20,7 @@ const createApolloClient = (authToken: string) => {
 };
 
 function App() {
-  const idToken = useAccessToken();
-  const { isLoading, isAuthenticated } = useAuth0();
+  const { idToken, isLoading } = useAccessToken();
 
   if (isLoading) {
     return (
@@ -37,12 +35,10 @@ function App() {
     );
   }
 
-  if (!isAuthenticated) return <Login />;
-
-  if (idToken) {
-    console.log(`idToken: ${idToken}`);
+  if (!idToken) {
+    return <Login />;
+  } else {
     const client = createApolloClient(idToken);
-
     return (
       <ApolloProvider client={client}>
         <Header />
@@ -51,8 +47,6 @@ function App() {
         </Routes>
       </ApolloProvider>
     );
-  } else {
-    return null;
   }
 }
 
