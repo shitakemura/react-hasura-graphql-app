@@ -36,7 +36,7 @@ const TodoClear = () => {
       color='pink.500'
       isLoading={loading}
       onClick={clearCompleted}>
-      Clear checked todos
+      Clear completed todos
     </Button>
   );
 };
