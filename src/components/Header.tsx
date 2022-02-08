@@ -30,7 +30,11 @@ const MenuLinks = () => {
         <Text
           fontWeight='bold'
           _hover={{ textDecoration: "underline" }}
-          onClick={() => logout()}>
+          onClick={() =>
+            logout({
+              returnTo: window.location.origin,
+            })
+          }>
           Logout
         </Text>
       ) : null}
